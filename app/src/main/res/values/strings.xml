@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="Title">ATMS</string>
+    <string name="Name">Enter your name</string>
+    <string name="NameTeacher">Name</string>
+    <string name="password1">Enter your ID No</string>
+    <string name="buttonhome">Log in</string>
+    <string name="Add">Add student</string>
+    <string name="View">View student</string>
+    <string name="update">Update student</string>
+    <string name="qrcode">Generate Qr</string>
+    <string name="Mark">Mark Attendance</string>
+    <string name="view2">View Attendance</string>
+    <string name="regtitle">Student Registration</string>
+    <string name="Male">Male</string>
+    <string name="Female">Female</string>
+    <string name="gender">Gender</string>
+    <string name="btnreg">Register</string>
+    <string name="password">Student Id</string>
+</resources>
