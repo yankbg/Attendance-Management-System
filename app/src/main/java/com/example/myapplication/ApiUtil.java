@@ -17,14 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApiUtil {
-    protected static final String BASE_URL = "http://10.0.2.2/attendance_system2/";
+    protected static final String BASE_URL = "https://attendancesystemrail-production.up.railway.app/";
     private static final String TAG = "ApiUtil";
 
     public static void markAttendance(Context context, String qrData,
                                       Response.Listener<JSONObject> success,
                                       Response.ErrorListener error) {
 
-        String url = BASE_URL + "mark_attendance.php";
+        String url = BASE_URL + "mark_attendance";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -85,7 +85,7 @@ public class ApiUtil {
                                          Response.Listener<JSONObject> success,
                                          Response.ErrorListener error) {
 
-        String url = BASE_URL+"upload_student.php";
+        String url = BASE_URL+"upload_student";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {
@@ -144,7 +144,7 @@ public class ApiUtil {
                                       Response.Listener<JSONObject> success,
                                       Response.ErrorListener error) {
 
-        String url = BASE_URL + "check_student.php";
+        String url = BASE_URL + "check_student";
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
                 response -> {

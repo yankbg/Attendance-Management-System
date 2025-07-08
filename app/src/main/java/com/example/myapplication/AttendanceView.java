@@ -1,13 +1,15 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 public class AttendanceView extends AppCompatActivity {
@@ -28,8 +34,10 @@ public class AttendanceView extends AppCompatActivity {
     ArrayList<RecordAttendance> attendanceList = new ArrayList<>();
     RecyclerView rvAttendanceRecords;
     TextView tvEmpty;
-    Button btnSearch;
-    EditText etSearchDate;
+    CalendarView calendarView;
+    Calendar calendar;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,22 +45,61 @@ public class AttendanceView extends AppCompatActivity {
 
         rvAttendanceRecords = findViewById(R.id.rvAttendanceRecords);
         tvEmpty = findViewById(R.id.tvEmpty);
-        btnSearch = findViewById(R.id.btnSearch);
-         etSearchDate = findViewById(R.id.etSearchDate);
+        calendarView = findViewById(R.id.calendarView);
+        calendar = Calendar.getInstance();
         viewAttendance();
-        btnSearch.setOnClickListener(v -> {
-            String date = etSearchDate.getText().toString().trim();
-            if (date.isEmpty()) {
-                // Load all attendance or show message
-                viewAttendance(); // or a method that loads all
-            } else {
-                attendanceViewDate(date);
-            }
-        });
+        LocalDate currentDate = LocalDate.now();
+        int year = currentDate.getYear();
+        int months = currentDate.getMonthValue();  // 1 (January) to 12 (December)
+        int day = currentDate.getDayOfMonth();
+        setDate(year,months,day);
+        getDate();
+
+            calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener(){
+                @Override
+                public void onSelectedDayChange(@NonNull CalendarView calendarView, int year,int month,int day){
+                    String Date;
+                    int Month = (month +1);
+
+                    if(Month <= 9 || day<=9){
+                        if(Month <= 9 && day<=9){
+                            Date = year + "-0" + Month + "-0"+day;
+                            attendanceViewDate(Date);
+                            Toast.makeText(AttendanceView.this, Date, Toast.LENGTH_SHORT).show();
+                        } else if (Month <= 9 && day > 9) {
+                            Date = year + "-0" + Month + "-"+day;
+                            attendanceViewDate(Date);
+                            Toast.makeText(AttendanceView.this, Date, Toast.LENGTH_SHORT).show();
+                        } else if (Month > 9 && day <= 9) {
+                            Date = year + "-" + Month + "-0"+day;
+                            attendanceViewDate(Date);
+                            Toast.makeText(AttendanceView.this, Date, Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                         Date = year + "-" + Month +"-"+day;
+                        attendanceViewDate(Date);
+                        Toast.makeText(AttendanceView.this, Date, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
     }
+    public void setDate(int year, int month, int day){
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month -1);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        long milli = calendar.getTimeInMillis();
+        calendarView.setDate(milli);
+    }
+    public void getDate(){
+        long date = calendarView.getDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
+        calendar.setTimeInMillis(date);
+        String Date  = simpleDateFormat.format(calendar.getTime());
+        Toast.makeText(this, Date, Toast.LENGTH_SHORT).show();
+    }
     private void viewAttendance() {
-        String url = "http://10.0.2.2/attendance_system2/get_attendance.php";
+        String url = "https://attendancesystemrail-production.up.railway.app/get_attendance";
 
         Toast.makeText(this, "Loading attendance...", Toast.LENGTH_SHORT).show();
 
@@ -110,7 +157,7 @@ public class AttendanceView extends AppCompatActivity {
         Volley.newRequestQueue(this).add(stringRequest);
     }
     private void attendanceViewDate(String date) {
-        String url = "http://10.0.2.2/attendance_system2/get_attendanceDate.php";
+        String url = "https://attendancesystemrail-production.up.railway.app/get_attendance_date";
 
         Toast.makeText(this, "Loading attendance for " + date + "...", Toast.LENGTH_SHORT).show();
 

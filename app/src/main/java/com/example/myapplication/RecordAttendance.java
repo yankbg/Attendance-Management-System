@@ -24,7 +24,7 @@ public class RecordAttendance {
     }
 
     public String getDate() {
-        return date;
+        return date.substring(0,10);
     }
 
     public String getTime() {
